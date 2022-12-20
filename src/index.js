@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors');
 
 const indexRoutes = require("./routes/index.js");
 const app = express()
@@ -7,6 +8,7 @@ const app = express()
 // settings
 app.set("port", process.env.PORT || 3000);
 
+app.use(cors())
 app.use(morgan("dev"));
 
 app.use("/api/v1", indexRoutes);
