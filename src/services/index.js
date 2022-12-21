@@ -20,12 +20,30 @@ exports.listFiles = async () => {
 }
 
 exports.getFiles = async (name) => {
-  const filesList = await this.listFiles()
+  if(name) {
+    const file = await formatData(name)
+    if (!file) throw boom.notFound('data not found')
+    return ([file]) 
+  }
+  else {
+    const filesList = await this.listFiles()
   if(filesList.length > 0)
   {
     const files = await Promise.all(
-      filesList.map((file) => {
-        return axios.get(`https://echo-serv.tbxnet.com/v1/secret/file/${file}`, {
+      filesList.map(async(file) => {
+        return await formatData(file)
+      })
+    )
+     
+    if (!files) throw boom.notFound('data not found')
+    return files 
+  }
+  }
+    
+ }
+
+ const formatData = async(name) => {
+  return axios.get(`https://echo-serv.tbxnet.com/v1/secret/file/${name}`, {
            headers: {
                'Content-Type': 'application/json',
                'authorization': 'Bearer aSuperSecretKey'
@@ -62,12 +80,4 @@ exports.getFiles = async (name) => {
      .catch(function (error) {
         console.log(error.response.data)      
      })
-      })
-    )
-     
-    if (!files) throw boom.notFound('data not found')
-    return files 
-
-  }
-    
  }

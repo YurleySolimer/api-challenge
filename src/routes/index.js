@@ -17,8 +17,8 @@ router.get('/files/list', async(req, res, next) => {
 
 router.get('/files/data', async(req, res, next) => {
     try {
-        const { name } = req.query
-        const file = await getFiles(name)
+        const { fileName } = req.query
+        const file = await getFiles(fileName)
         res.status(200).json(file)
     } catch (error) {
         next(error)
