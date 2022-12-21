@@ -5,9 +5,8 @@
       "title": "API Challenge",
       "description": "API to get and format files"      
     },
-    "host": "localhost:3000",
-    "basePath": "/",    
-
+    "host": "localhost:4000",
+    "basePath": "/", 
     "paths": {
         "/files/list": {
             "get": {

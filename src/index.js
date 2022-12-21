@@ -1,13 +1,15 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors');
+const dotenv = require("dotenv");
 
-const { logErrors, errorHandler, boomErrorHandler } = require('./handlers/handleError')
+const { logErrors, errorHandler, boomErrorHandler } = require('./handlers/handleError');
 
 const indexRoutes = require("./routes/index.js");
-const { swaggerDocs } = require("./swagger")
+const { swaggerDocs } = require("./swagger");
 
 const app = express()
+dotenv.config({ path: "src/config/config.env" });
 app.set("port", process.env.PORT || 3000);
 
 app.use(cors())

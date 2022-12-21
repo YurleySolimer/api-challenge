@@ -1,12 +1,18 @@
 const axios = require('axios');
-const boom = require('@hapi/boom')
-const { isValid } = require('../utils/isValid')
+const boom = require('@hapi/boom');
+const dotenv = require("dotenv");
+const { isValid } = require('../utils/isValid');
+
+dotenv.config({ path: "src/config/config.env" });
+const URL = process.env.EXTERNAL_URI
+const TOKEN = process.env.TOKEN
 
 exports.listFiles = async () => {
-   const files = axios.get('https://echo-serv.tbxnet.com/v1/secret/files', {
+  console.log('URL', URL)
+   const files = axios.get(`${URL}/files`, {
         headers: {
             'Content-Type': 'application/json',
-            'authorization': 'Bearer aSuperSecretKey'
+            'authorization': TOKEN
         }
     })
   .then(function (response) {
@@ -27,59 +33,58 @@ exports.getFiles = async (name) => {
   }
   else {
     const filesList = await this.listFiles()
-  if(filesList.length > 0)
-  {
-    const files = await Promise.all(
-      filesList.map(async(file) => {
-        return await formatData(file)
-      })
-    )
-     
-    if (!files) throw boom.notFound('data not found')
-    return files.filter(file => {
-      if (file !== null) return file
-    }) 
-  }
-  }
-    
+    if(filesList.length > 0)
+    {
+      const files = await Promise.all(
+        filesList.map(async(file) => {
+          return await formatData(file)
+        })
+      )
+      
+      if (!files) throw boom.notFound('data not found')
+      return files.filter(file => {
+        if (file !== null) return file
+      }) 
+    }
+  }    
  }
 
  const formatData = async(name) => {
-  return axios.get(`https://echo-serv.tbxnet.com/v1/secret/file/${name}`, {
-           headers: {
-               'Content-Type': 'application/json',
-               'authorization': 'Bearer aSuperSecretKey'
+  return axios.get(`${URL}/file/${name}`, {
+   headers: {
+       'Content-Type': 'application/json',
+       'authorization': TOKEN
+   }
+  })
+  .then(function (response) { 
+   if(response?.data) {
+       const dataSplit = response.data.split(/\r\n|\r|\n/,-1)
+       let lines = []
+       let fileName = ''
+       dataSplit.map((string) => {
+           const stringSplit = string.split(',')
+           if(stringSplit.length === 4) {
+               fileName = stringSplit[0]                  
+               
+               if(isValid(stringSplit)) {
+                   const newLine = {
+                       text: stringSplit[1],
+                       number: stringSplit[2],
+                       hex: stringSplit[3]
+                   }
+                   lines.push(newLine)
+               }                      
            }
        })
-     .then(function (response) { 
-      if(response?.data) {
-          const dataSplit = response.data.split(/\r\n|\r|\n/,-1)
-          let lines = []
-          let fileName = ''
-          dataSplit.map((string) => {
-              const stringSplit = string.split(',')
-              if(stringSplit.length === 4) {
-                  fileName = stringSplit[0]                  
-                  
-                  if(isValid(stringSplit)) {
-                      const newLine = {
-                          text: stringSplit[1],
-                          number: stringSplit[2],
-                          hex: stringSplit[3]
-                      }
-                      lines.push(newLine)
-                  }                      
-              }
-          })
-          if(lines.length > 0) {
-            return({
-              file: fileName,
-              lines: lines
-          })
-          }          
-        }  
-     })
-     .catch(function (error) {
-        console.log(error.response.data)      
-     })
+       if(lines.length > 0) {
+         return({
+           file: fileName,
+           lines: lines
+       })
+       }          
+    }  
+  })
+    .catch(function (error) {
+      console.log(error.response.data)      
+    })
  }
