@@ -1,0 +1,42 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0", 
+      "title": "API Challenge",
+      "description": "API to get and format files"      
+    },
+    "host": "localhost:3000",
+    "basePath": "/",    
+
+    "paths": {
+        "/files/list": {
+            "get": {
+                "tags": ["List Files"],
+                "summary": "Get all files",
+                "responses": {
+                    "200": {
+                        "description": "OK"               
+                    }
+                }
+            }
+        },
+        "/files/data": {
+            "get": {
+                "tags": ["Data Files"],
+                "summary": "Get all formatted files",
+                "parameters": [
+                    {
+                      "name": "fileName",
+                      "in": "query",
+                      "description": "Filename that we want to format"                     
+                    }
+                ],                
+                "responses": {
+                    "200": {
+                        "description": "OK"               
+                    }
+                }
+            }
+        }
+    }
+}

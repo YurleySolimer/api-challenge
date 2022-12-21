@@ -5,9 +5,9 @@ const cors = require('cors');
 const { logErrors, errorHandler, boomErrorHandler } = require('./handlers/handleError')
 
 const indexRoutes = require("./routes/index.js");
-const app = express()
+const { swaggerDocs } = require("./swagger")
 
-// settings
+const app = express()
 app.set("port", process.env.PORT || 3000);
 
 app.use(cors())
@@ -18,8 +18,8 @@ app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-// listening the Server
 const server = app.listen(app.get("port"), function(){
+    swaggerDocs(app, app.get("port"))
     console.log("Server on port", app.get("port"))
 }); 
 
