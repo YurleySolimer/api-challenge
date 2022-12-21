@@ -3,27 +3,26 @@ const router = express.Router()
 
 const {
     listFiles,
-    getFile
-} = require('../controllers/index')
+    getFiles
+} = require('../services/index')
 
-router.get('/', async(req, res) => {
+router.get('/files/list', async(req, res, next) => {
     try {
         const files = await listFiles()
         res.status(200).json(files)
     } catch (error) {
-        console.log(error)
+        next(error)       
     }
 })
 
-router.get('/:name', async(req, res) => {
+router.get('/files/data', async(req, res, next) => {
     try {
-        const { name } = req.params
-        const file = await getFile(name)
+        const { name } = req.query
+        const file = await getFiles(name)
         res.status(200).json(file)
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 })
-
 
 module.exports = router;
