@@ -19,5 +19,8 @@ app.use(boomErrorHandler);
 app.use(errorHandler);
 
 // listening the Server
-app.listen(app.get("port"));
-console.log("Server on port", app.get("port"));
+const server = app.listen(app.get("port"), function(){
+    console.log("Server on port", app.get("port"))
+}); 
+
+module.exports = server;

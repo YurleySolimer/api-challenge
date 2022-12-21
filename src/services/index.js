@@ -36,7 +36,9 @@ exports.getFiles = async (name) => {
     )
      
     if (!files) throw boom.notFound('data not found')
-    return files 
+    return files.filter(file => {
+      if (file !== null) return file
+    }) 
   }
   }
     

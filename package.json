@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha '__test__/**/*.js' --timeout 100000 --exit",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
@@ -21,12 +21,15 @@
   "dependencies": {
     "@hapi/boom": "^10.0.0",
     "axios": "^1.2.1",
+    "chai-http": "^4.3.0",
     "cors": "^2.8.5",
     "csv": "^6.2.5",
     "express": "^4.18.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.20"
   }
 }
